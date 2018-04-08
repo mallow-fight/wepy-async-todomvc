@@ -1,9 +1,9 @@
-export const REMOVE_TODO = 'REMOVE_TODO'
+// async action types
 
-export const ADD_TODO = 'ADD_TODO'
+export const ASYNC_GET_TODO_LIST = 'ASYNC_GET_TODO_LIST'
 
-export const COMPLETE_TODO = 'COMPLETE_TODO'
+export const ASYNC_ADD_TODO = 'ASYNC_ADD_TODO'
 
-export const OPEN_EDIT_TODO = 'OPEN_EDIT_TODO'
+export const ASYNC_DELETE_TODO = 'ASYNC_DELETE_TODO'
 
-export const EDIT_TODO = 'EDIT_TODO'
+export const ASYNC_UPDATE_TODO = 'ASYNC_UPDATE_TODO'

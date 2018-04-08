@@ -35,18 +35,16 @@
   <view class="todo">
     <view class="todoInput">
       <input class="inputThing" bindinput="inputTodoThing" placeholder="输入任务项" />
-      <button class="addTodo" size="mini" type="primary" @tap="addTodo({{todoThing}})">添加</button>    
+      <button class="addTodo" size="mini" type="primary" @tap="addTodo">添加</button>    
     </view>
     <view class="todoList">
       <repeat for="{{todos}}" key="index" index="index" item="todo">
           <input 
           type="text" 
-          disabled="{{todo.disabled}}"
-          value="{{todo.text}}"
+          value="{{todo.title}}"
           bindinput="editTodoThing({{todo}})"
-          class="{{todo.classes}}" />
-          <button size="mini" type="primary" class="todoComplete" @tap="completeTodo({{todo.id}})">{{ todo.complete ? '已完成' : '未完成' }}</button>
-          <button size="mini" class="todoEdit" @tap="openEditTodo({{todo.id}})">{{ todo.disabled ? '修改' : '完成' }}</button>
+          class="{{todo.completed ? 'completeText' : ''}}" />
+          <button size="mini" type="primary" class="todoComplete" @tap="toggleTodo({{todo}})">{{ todo.completed ? '已完成' : '未完成' }}</button>
           <button size="mini" type="warn" class="todoRemove" @tap="removeTodo({{todo.id}})">移除</button>
       </repeat>
     </view>
@@ -59,23 +57,19 @@
     getStore
   } from 'wepy-redux'
   import {
-    addTodo,
-    removeTodo,
-    completeTodo,
-    editTodo,
-    openEditTodo
+    asyncGetTodoList,
+    asyncAddTodo,
+    asyncDeleteTodo,
+    asyncUpdateTodo
   } from '../store/actions/todo.js'
   const store = getStore()
+  // you can get state by store.getState() directly
   @connect({
     todos(state) {
       return state.todo.todos
     }
   }, {
-    addTodo,
-    removeTodo,
-    completeTodo,
-    editTodo,
-    openEditTodo
+    // actions bind, if has no arguments
   })
   export default class Todo extends wepy.component {
     data = {
@@ -89,14 +83,39 @@
         default: 0
       }
     }
+    onLoad() {
+      store.dispatch(asyncGetTodoList())
+    }
     methods = {
+      addTodo() {
+        const title = this.todoThing.title
+        if (!title || !title.length) {
+          return wepy.showToast({
+            icon: 'none',
+            title: '输入不能为空!'
+          })
+        }
+        store.dispatch(
+          asyncAddTodo({
+            title: this.todoThing.title,
+            completed: false
+          })
+        )
+        this.$apply()
+      },
+      removeTodo(id) {
+        store.dispatch(asyncDeleteTodo({id}))
+      },
       inputTodoThing(e) {
-        this.todoThing.text = e.detail.value
-        this.todoThing.todoIndex = this.todoIndex
+        this.todoThing.title = e.detail.value
       },
       editTodoThing(todo, e) {
-        todo.text = e.detail.value
-        store.dispatch(editTodo(todo))
+        todo.title = e.detail.value
+        store.dispatch(asyncUpdateTodo(todo))
+      },
+      toggleTodo(todo) {
+        todo.completed = !todo.completed
+        store.dispatch(asyncUpdateTodo(todo))
       }
     }
   }

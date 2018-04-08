@@ -1,91 +1,59 @@
 import wepy from 'wepy'
-import { handleActions } from 'redux-actions'
-import { REMOVE_TODO, ADD_TODO, COMPLETE_TODO, OPEN_EDIT_TODO, EDIT_TODO } from '../types/index'
-function deleteClass(body, name) {
-    const map = []
-    body.map(bo => {
-        if(bo !== name) return map.push(bo)
-    })
-    return map
-}
-function cacheState(map) {
-    wepy.setStorageSync('todos', map)
-    return map
+import {
+  handleActions
+} from 'redux-actions'
+import {
+  ASYNC_GET_TODO_LIST,
+  ASYNC_UPDATE_TODO,
+  ASYNC_ADD_TODO,
+  ASYNC_DELETE_TODO
+} from '../types/index'
+
+function cutTodoList(preTodos, id) {
+  const nextTodos = []
+  ;preTodos.map(todo => {
+    if (todo.id !== id) {
+        nextTodos.push(todo)
+    }
+  })
+  return nextTodos
 }
 export default handleActions({
-  [REMOVE_TODO] (state, action) {
-    function cutTodos() {
-        const map = []
-        state.todos.map(todo => {
-            if(todo.id === action.payload) return;
-            return map.push(todo)
-        })
-        return map
+  [ASYNC_GET_TODO_LIST](state, action) {
+    console.log('ASYNC_GET_TODO_LIST', action)
+    return {
+      ...state,
+      todos: action.payload.data.reverse()
     }
-    return cacheState({
-        ...state,
-        todos: cutTodos()
-    })
   },
-  [ADD_TODO] (state, action) {
-    const text = action.payload.text
-    if(!text) return {...state, todos: state.todos}
-    return cacheState({
-        ...state,
-        todos: state.todos.concat({
-            id: state.todoId ++,
-            text: action.payload.text,
-            complete: false,
-            disabled: true,
-            classes: ['todoText']
-        })
-    })
+  [ASYNC_ADD_TODO](state, action) {
+    console.log('ASYNC_ADD_TODO', action)
+    const newTodo = action.payload.data
+    state.todos.unshift(newTodo)
+    return {
+      ...state,
+      todos: state.todos
+    }
   },
-  [COMPLETE_TODO] (state, action) {
-      return cacheState({
-        ...state,
-        todos: state.todos.map( todo => {
-          if(todo.id === action.payload) { 
-              todo.complete = !todo.complete
-              if(todo.complete) { 
-                todo.classes.push('completeText') 
-              } else {
-                todo.classes = deleteClass(todo.classes, 'completeText')
-              }
-          }
-          return todo
-        })
-    })
-  },
-  [OPEN_EDIT_TODO] (state, action) {
-      return cacheState({
-        ...state,
-        todos: state.todos.map( todo => {
-          if(todo.id === action.payload) { 
-            todo.disabled = !todo.disabled
-            if(!todo.disabled) { 
-                todo.classes.push('editText') 
-            } else {
-                todo.classes = deleteClass(todo.classes, 'editText')
-            }
-          }
-          return todo
+  [ASYNC_UPDATE_TODO](state, action) {
+    console.log('ASYNC_UPDATE_TODO', action)
+    const updatedTodo = action.payload.data
+    const id = updatedTodo.id
+    return {
+      ...state,
+      todos: state.todos.map(todo => {
+        if (todo.id === id) return updatedTodo
+        return todo
       })
-    })
+    }
   },
-  [EDIT_TODO] (state, action) {
-      const {id, text} = action.payload
-      return cacheState({
-        ...state,
-        todos: state.todos.map( todo => {
-            if(todo.id === id) { 
-              todo.text = text
-            }
-            return todo
-        })
-    })
+  [ASYNC_DELETE_TODO](state, action) {
+    console.log('ASYNC_DELETE_TODO', action)
+    return {
+      ...state,
+      todos: cutTodoList(state.todos, action.payload.data.id)
+    }
   }
 }, {
-  todoId: wx.getStorageSync('todos').todoId || 0,
-  todos: wx.getStorageSync('todos').todos || []
+  todos: []
 })
