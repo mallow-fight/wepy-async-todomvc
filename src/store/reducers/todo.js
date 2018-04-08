@@ -29,10 +29,11 @@ export default handleActions({
   [ASYNC_ADD_TODO](state, action) {
     console.log('ASYNC_ADD_TODO', action)
     const newTodo = action.payload.data
-    state.todos.unshift(newTodo)
     return {
       ...state,
-      todos: state.todos
+      // do not use reverse, it will change state.todos
+      // then cause view is not update as you expect.
+      todos: [newTodo].concat(state.todos)
     }
   },
   [ASYNC_UPDATE_TODO](state, action) {

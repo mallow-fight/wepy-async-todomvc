@@ -30,6 +30,11 @@
   .editText{
     color: red;
   }
+  .line{
+    margin-top: 20rpx;
+    width: 100%;
+    border: 1rpx solid @sky;
+  }
 </style>
 <template>
   <view class="todo">
@@ -46,6 +51,7 @@
           class="{{todo.completed ? 'completeText' : ''}}" />
           <button size="mini" type="primary" class="todoComplete" @tap="toggleTodo({{todo}})">{{ todo.completed ? '已完成' : '未完成' }}</button>
           <button size="mini" type="warn" class="todoRemove" @tap="removeTodo({{todo.id}})">移除</button>
+          <view class="line"></view>
       </repeat>
     </view>
   </view>
@@ -97,7 +103,7 @@
         }
         store.dispatch(
           asyncAddTodo({
-            title: this.todoThing.title,
+            title,
             completed: false
           })
         )
