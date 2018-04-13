@@ -1,0 +1,58 @@
+<style lang="less" src="./index.less" scoped></style>
+<template>
+  <view>
+    <!-- swiper width: 100% -->
+    <swiper class="fill-width" indicator-dots autoplay circular interval="{{3000}}">
+      <block wx:for="{{carousel}}" wx:key="id">
+        <swiper-item>
+          <!-- swiper image width: 100% height: xxrpx -->
+          <image 
+            src="{{item.picurl}}" 
+            alt="{{item.name}}" 
+            class="fill-width slide-image" />
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <view class="theme">
+      <view class="theme-tag" />
+      <text class="theme-title">主题馆</text>
+    </view>
+    
+    <view class="theme-images">
+      <image
+        wx:for="{{theme}}" 
+        wx:key="id"
+        class="theme-image"
+        src="{{item.smallpic}}" 
+        title="{{item.name}}" 
+        alt="{{item.name}}" />
+    </view>
+    <view class="selection">
+      <view class="selection-tag" />
+      <text class="selection-title">环球精选</text>
+    </view>
+
+    <view class="selection-contain">
+      <view wx:for="{{selection}}" wx:key="id">
+        <image
+          class="selection-image"
+          src="{{item.goodspics}}"
+          title="{{item.reason}}"
+          alt="{{item.reason}}"
+        />
+        <view class="selection-text">{{item.title}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import {carousel, theme, selection} from './mock.js'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'market'
+    }
+    data = {carousel, theme, selection}
+  }
+</script>

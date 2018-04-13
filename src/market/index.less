@@ -1,0 +1,52 @@
+@import '../theme.less';
+.slide-image{
+  height: 320rpx;
+}
+.theme, .selection {
+  display: flex;
+  flex-direction: row; // default
+  flex-wrap: nowrap; // default
+  justify-content: flex-start;
+  align-items: center;
+  margin: 20rpx 0 20rpx 0;
+}
+.theme-tag, .selection-tag{
+  height: 60rpx;
+  width: 20rpx;
+  background: yellow;
+}
+.theme-title, .selection-title{
+  text-indent: 20rpx;  // 缩进
+}
+
+.theme-images{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+.theme-image{
+  height: 240rpx;
+  width: 48%;
+  margin-top: 2%;
+}
+.selection-contain{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.selection-image, .selection-text{
+  width: 80%;
+  margin-left: 10%;
+}
+.selection-image{
+  height: 480rpx;
+  box-shadow: 1rpx 1rpx 10rpx 1rpx gray;
+}
+.selection-text{
+  color: gray;
+  font-size: 35rpx;
+  font-weight: 600;
+  line-height: 50rpx;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+}
